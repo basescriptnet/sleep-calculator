@@ -1,0 +1,8 @@
+{
+  "name": "Sleep Calculator",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react",
+  "id": "361f4f47"
+}
