@@ -23,22 +23,16 @@ const Tab1: React.FC = function () {
         minutes = Math.abs(60 + minutes)
       }
       if (hours < 0) {
-        hours = Math.abs(12 + hours)
+        hours = Math.abs(24 + hours)
       }
-      // hours = ~~(minutes / 60);
-      // minutes = minutes % 60;
-      if (hours > 12) hours -= 12;
       let final = amPm(`${hours}:${minutes}`)
       times.push(
         <IonItem key={i}>
           <IonText color="success" style={{margin: '0 auto'}}>{final}</IonText>
         </IonItem>
       )
-
-      // add comma in between
-      // if (i != skipFirstHours+5-1) times.push(<span key={'Span'+i} style={{paddingRight: '10px'}}>,</span>)
     }
-    return times;
+    return times.reverse();
   }
   let amPm = (time: string):string => {
     let t = time.split(':');
@@ -74,7 +68,6 @@ const Tab1: React.FC = function () {
                 onIonChange={e => {
                   // times = [];
                   // let n = e.detail.value!;
-                  // console.log(times)
                   setDate(e.detail.value!);
                   // return times;
                 }}
