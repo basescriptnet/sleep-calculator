@@ -1,38 +1,44 @@
 import React, { useState } from 'react';
-import { IonDatetime, IonText, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonGrid, IonRow, IonLabel, IonList, IonItem } from '@ionic/react';
+import { IonDatetime, IonButton, IonText, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonGrid, IonRow, IonLabel, IonList, IonItem } from '@ionic/react';
 // import ExploreContainer from '../components/ExploreContainer';
-import './Tab1.css';
 
 const Tab1: React.FC = function () {
-  let log = console.log
-  let [selectedDate, setDate] = useState<string>('06:00');
-  let times: any = ["2:25", "1:15", "11:45", "10:15", "8:45"];
+  let hours = new Date().getHours();
+  let minutes = new Date().getMinutes()
+  let [selectedDate, setDate] = useState<string>(`${hours}:${(''+minutes).length == 1 ? '0'+minutes : minutes}`);
+  let times: any = [];
+
   let calculate = function () {
     times = [];
     let t = selectedDate.split(':');
-    let skipFirstHours = 2;
-    for (let i = skipFirstHours; i < skipFirstHours+5; i++) { // 5 results
+    let skipFirstHours = 1;
+    for (let i = skipFirstHours; i < skipFirstHours+6; i++) { // 6 results
       let timeInMinutes: number = parseFloat(t[0]) * 60 + parseFloat(t[1]);
-      timeInMinutes -= i * 90;
-      timeInMinutes -= 15; // 15 minutes time to fall asleep
+      timeInMinutes += i * 90;
+      timeInMinutes += 15; // 15 minutes time to fall asleep
+      // debugger
       let hours = ~~(timeInMinutes / 60);
 
       let minutes = timeInMinutes % 60;
-      if (minutes < 0) {
-        hours -= 1;
-        minutes = Math.abs(60 + minutes)
+      if (minutes > 60) {
+        hours += 1;
+        minutes = Math.abs(minutes - 60)
       }
-      if (hours < 0) {
-        hours = Math.abs(24 + hours)
+      if (hours > 24) {
+        hours = Math.abs(24 - hours)
       }
-      let final = amPm(`${hours}:${minutes}`)
+      let fixMinutes = ''+minutes;
+      if (fixMinutes.length == 1) {
+        fixMinutes = '0'+fixMinutes;
+      }
+      let final = amPm(`${hours}:${fixMinutes}`)
       times.push(
-        <IonItem key={i}>
-          <IonText color="success" style={{margin: '0 auto'}}>{final}</IonText>
-        </IonItem>
+        <IonButton key={i}>
+          {final}
+        </IonButton>
       )
     }
-    return times.reverse();
+    return times;
   }
   let amPm = (time: string):string => {
     let t = time.split(':');
@@ -43,46 +49,33 @@ const Tab1: React.FC = function () {
       amOrPm = 'PM'
     };
     return `${
-      (hours +'').length > 1 ? hours : '0'+hours
-    }:${t[1]}\u00a0${amOrPm}`
+      (hours +'').length == 1 ? '0'+hours : hours
+    }:${(''+t[1]).length == 1 ? '0'+t[1] : t[1]}\u00a0${amOrPm}`
   }
+  setInterval(function () {
+    setDate(`${new Date().getHours()}:${new Date().getMinutes()}`)
+  }, 5e3)
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>When to wake up</IonTitle>
+          <IonTitle>Quick Calc</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
           <IonHeader collapse="condense">
             <IonToolbar>
-              <IonTitle size="large">When to wake up</IonTitle>
+              <IonTitle size="large">Quick Calc</IonTitle>
             </IonToolbar>
           </IonHeader>
-          {/* <ExploreContainer name="When to wake up" /> */}
         <IonGrid>
-          <IonRow>
-            {/* <IonButton onClick={e => e.preventDefault()}> */}
-              <IonLabel>Choose the time.</IonLabel>
-              <IonDatetime
-                onIonChange={e => {
-                  // times = [];
-                  // let n = e.detail.value!;
-                  setDate(e.detail.value!);
-                  // return times;
-                }}
-                display-format="hh:mm A"
-                picker-format="hh:mm A"
-                value={selectedDate}
-                mode="ios"
-                minute-values="0,5,10,15,20,25,30,35,40,45,50,55"
-              />
-              {/* </IonButton> */}
+          <IonRow
+            >Now it is <IonText color="success">{amPm(selectedDate)}</IonText>.
           </IonRow>
-          <IonRow>In order to wake up at<IonText color="success"> {amPm(selectedDate)} </IonText>energized, you will need to
-            go to sleep at <IonText color="success"></IonText>
-            
-            <IonList inset>{ calculate() }</IonList>
+          <IonRow>If you take a power nap,
+            than you will need to wake up at: <br/>{calculate()[0]}<br/>
+            Otherwise, wake up at:
+            <div>{ calculate().slice(1) }</div>
           </IonRow>
         </IonGrid>
       </IonContent>

@@ -32,6 +32,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './pages/style.css';
 
 const App: React.FC = () => (
   <IonApp>
@@ -54,15 +55,15 @@ const App: React.FC = () => (
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/tab1">
             <IonIcon icon={triangle} />
-            <IonLabel>When to Sleep</IonLabel>
+            <IonLabel>Quick Calc</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab2" href="/tab2">
             <IonIcon icon={ellipse} />
-            <IonLabel>When to Wake up</IonLabel>
+            <IonLabel>When to Sleep</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab3" href="/tab3">
             <IonIcon icon={square} />
-            <IonLabel>Power Nap</IonLabel>
+            <IonLabel>When to Wake up</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
